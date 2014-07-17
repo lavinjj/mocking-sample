@@ -2,6 +2,7 @@
 'use strict';
 
 var pkg = require('./package.json');
+var mockServer = require('./mockServer.js');
 
 //Using exclusion patterns slows down Grunt significantly
 //instead of creating a set of patterns like '**/*.js' and '!**/node_modules/**'
@@ -40,7 +41,27 @@ module.exports = function (grunt) {
     connect: {
       main: {
         options: {
-          port: 9001
+          port: 9000,
+          middleware: function (connect, options) {
+            // Same as in grunt-contrib-connect
+            var middlewares = [];
+            var directory = options.directory ||
+                options.base[options.base.length - 1];
+            if (!Array.isArray(options.base)) {
+              options.base = [options.base];
+            }
+
+            // Here comes the PHP middleware
+            middlewares.push(mockServer);
+
+            // Same as in grunt-contrib-connect
+            options.base.forEach(function (base) {
+              middlewares.push(connect.static(base));
+            });
+
+            middlewares.push(connect.directory(directory));
+            return middlewares;
+          }
         }
       }
     },
@@ -60,7 +81,7 @@ module.exports = function (grunt) {
         options: {
             jshintrc: '.jshintrc'
         },
-        src: createFolderGlobs('*.js')
+        src: [createFolderGlobs('*.js'), '!mockServer.js']
       }
     },
     clean: {
