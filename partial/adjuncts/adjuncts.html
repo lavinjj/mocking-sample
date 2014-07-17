@@ -1,4 +1,53 @@
 <div class="col-md-12" ng-controller="AdjunctsCtrl">
-
-
+  <div class="col-xs-12">
+    &nbsp;
+  </div>
+  <div class="col-xs-12">
+    <h2>Available Adjuncts</h2>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Use</th>
+        <th>Time</th>
+        <th>Amount</th>
+        <th>&nbsp;</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="adjunct in adjuncts | startFrom:getAdjunctStartFrom() | limitTo:itemsPerPage">
+        <td class="col-xs-4">{{adjunct.Name}}</td>
+        <td class="col-xs-2">{{adjunct.Type}}</td>
+        <td class="col-xs-2"><select id="adjunct_use_{{$index}}" name="adjunct_use_{{$index}}"
+                                     class="form-control" ng-model="adjunct.Use">
+          <option value="Mash">Mash</option>
+          <option value="Boil">Boil</option>
+          <option value="Primary">Primary</option>
+          <option value="Secondary">Secondary</option>
+          <option value="Bottling">Bottling</option>
+        </select></td>
+        <td class="col-xs-1"><input id="adjunct_time_{{$index}}" name="adjunct_time_{{$index}}"
+                                    class="form-control" placeholder=""
+                                    type="tel"
+                                    ng-model="adjunct.Time"></td>
+        <td class="col-xs-1"><input id="adjunct_amount_{{$index}}" name="adjunct_amount_{{$index}}"
+                                    class="form-control" placeholder=""
+                                    type="tel"
+                                    ng-model="adjunct.Amount"></td>
+        <td class="col-xs-1">
+          <a class="btn btn-default btn-lg" href="#/adjunct/{{$index}}" >
+            <span class="fa fa-edit"></span> Edit
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="pull-right">
+      <pagination boundary-links="true" max-size="5" total-items="adjuncts.length" page="currentAdjunctPage"
+                  items-per-page="itemsPerPage" on-select-page="changeAdjunctPage(page)"></pagination>
+    </div>
+  </div>
 </div>
